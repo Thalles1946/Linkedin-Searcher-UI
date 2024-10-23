@@ -1,6 +1,7 @@
 using OfficeOpenXml;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Collections.Immutable;
 using System.IO.Packaging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -174,14 +175,32 @@ namespace Linkedin_Searcher_UI
             }
         }
 
+        private static List<string> filterLinks(System.Collections.Immutable.ImmutableList<OpenQA.Selenium.IWebElement> links)
+        {
+            List<string> newLinks = new List<string>();
+
+            for (int i = 0; i < links.Count; i++)
+            {
+                bool validation = !links[i].GetAttribute("href").Contains("keywords");
+
+                if (validation)
+                {
+                    newLinks.Add(links[i].GetAttribute("href"));
+                }
+            }
+
+            return newLinks;
+        }
+
         static void getNames()
         {
 
             List<string> newNames = new List<string>();
+            
 
 
             var profileNames = driver.FindElements(By.XPath("//a[@class='app-aware-link ']/span/span"));
-            var profileLinks = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a"));
+            var profileLinks = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a")).ToImmutableList();
             foreach (var item in profileNames)
             {
                 if (!item.Text.Contains("Ver perfil"))
@@ -190,16 +209,21 @@ namespace Linkedin_Searcher_UI
                 }
             }
 
+            List<string> newLinks = filterLinks(profileLinks);
+
             for (int i = 0; i < newNames.Count; i++)
             {
-                if (!newNames[i].Equals("Usuário do LinkedIn"))
+                bool validation = !profileLinks[i].GetAttribute("href").Contains("keywords");
+
+                if (validation)
                 {
 
                     Perfil newPerfil = new Perfil();
                     newPerfil.Name = newNames[i];
-                    newPerfil.Url = profileLinks[i].GetAttribute("href");
+                    newPerfil.Url = newLinks[i];
                     perfis.Add(newPerfil);
                 }
+
             }
 
         }
