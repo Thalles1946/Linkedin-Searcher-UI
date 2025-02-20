@@ -24,6 +24,24 @@ namespace Linkedin_Searcher_UI
 
         public Main()
         {
+            var options = new ChromeOptions();
+
+            // Desativa a GPU
+            options.AddArgument("--disable-gpu");
+
+            // Executa o Chrome sem interface gráfica (opcional)
+            options.AddArgument("--headless=new");
+
+            // Evita problemas de renderização
+            options.AddArgument("--disable-software-rasterizer");
+
+            // Corrige problemas de alocação de memória em containers
+            options.AddArgument("--disable-dev-shm-usage");
+
+            // Evita problemas de permissões em ambientes Linux
+            options.AddArgument("--no-sandbox");
+
+
             InitializeComponent();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             button3.Enabled = false;
@@ -196,10 +214,10 @@ namespace Linkedin_Searcher_UI
         {
 
             List<string> newNames = new List<string>();
-            
 
 
-            var profileNames = driver.FindElements(By.XPath("//a[@class='app-aware-link ']/span/span"));
+
+            var profileNames = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a/span/span"));
             var profileLinks = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a")).ToImmutableList();
             foreach (var item in profileNames)
             {
@@ -252,5 +270,7 @@ namespace Linkedin_Searcher_UI
         {
 
         }
+
+
     }
 }
