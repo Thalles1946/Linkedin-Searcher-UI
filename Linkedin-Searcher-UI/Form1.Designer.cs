@@ -46,6 +46,7 @@
             label9 = new Label();
             label10 = new Label();
             progressBar1 = new ProgressBar();
+            label11 = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
@@ -227,11 +228,21 @@
             progressBar1.TabIndex = 19;
             progressBar1.Click += progressBar1_Click_1;
             // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(163, 483);
+            label11.Name = "label11";
+            label11.Size = new Size(74, 15);
+            label11.TabIndex = 20;
+            label11.Text = "Versão : 1.0.0";
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(402, 507);
+            Controls.Add(label11);
             Controls.Add(progressBar1);
             Controls.Add(label10);
             Controls.Add(label9);
@@ -280,5 +291,6 @@
         private Label label9;
         private Label label10;
         private ProgressBar progressBar1;
+        private Label label11;
     }
 }
