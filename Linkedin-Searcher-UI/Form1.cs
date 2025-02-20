@@ -214,7 +214,7 @@ namespace Linkedin_Searcher_UI
         {
 
             List<string> newNames = new List<string>();
-            
+
 
 
             var profileNames = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a/span/span"));
@@ -270,5 +270,7 @@ namespace Linkedin_Searcher_UI
         {
 
         }
+
+
     }
 }
