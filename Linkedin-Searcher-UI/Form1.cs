@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Immutable;
 using System.IO.Packaging;
+using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
@@ -96,11 +97,11 @@ namespace Linkedin_Searcher_UI
         private void navigation()
         {
             driver.Navigate().GoToUrl("https://linkedin.com/login");
-            var usernameField = driver.FindElement(By.Id("username"));
-            usernameField.SendKeys(email);
-            var passwordField = driver.FindElement(By.Id("password"));
-            passwordField.SendKeys(password);
-            var loginButton = driver.FindElement(By.XPath("//button[@type='submit']"));
+            var usernameField = driver.FindElements(By.XPath("//input[@type='email']"));
+            usernameField[1].SendKeys(email);
+            var passwordField = driver.FindElements(By.XPath("//input[@type='password']"));
+            passwordField[1].SendKeys(password);
+            var loginButton = driver.FindElement(By.XPath("/html/body/div[1]/div/div/div/div/main/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div/div[3]/button"));
             loginButton.Click();
             progressBar1.Maximum = maxPages;
 
@@ -150,6 +151,8 @@ namespace Linkedin_Searcher_UI
 
                     worksheet.Cells[1, 1].Value = "Nome";
                     worksheet.Cells[1, 2].Value = "URL";
+                    List<Perfil> perfisPrint = perfis;
+
 
                     for (int i = 0; i < perfis.Count; i++)
                     {
@@ -196,33 +199,33 @@ namespace Linkedin_Searcher_UI
         {
 
             List<string> newNames = new List<string>();
-            
+            List<string> profileLinks = new List<string>();
 
-
-            var profileNames = driver.FindElements(By.XPath("//a[@class='app-aware-link ']/span/span"));
-            var profileLinks = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a")).ToImmutableList();
+            var profileNamesVerified = driver.FindElements(By.XPath("//a[@tabindex='0']/div/div[1]/div[2]/p/a"));
+            var profileNamesNonVerified = driver.FindElements(By.XPath("//a[@tabindex='0']/div/div[1]/div[1]/p/a"));
+            var profileNames = profileNamesVerified.Concat(profileNamesNonVerified).ToImmutableList();
+            //var profileLinks = driver.FindElements(By.XPath("//div[@class='t-roman t-sans']/div/span/span/a")).ToImmutableList();
             foreach (var item in profileNames)
             {
                 if (!item.Text.Contains("Ver perfil"))
                 {
                     newNames.Add(item.Text);
+                    profileLinks.Add(item.GetAttribute("href"));
+
+
                 }
             }
 
-            List<string> newLinks = filterLinks(profileLinks);
+            List<string> newLinks = profileLinks;
 
             for (int i = 0; i < newNames.Count; i++)
             {
-                bool validation = !profileLinks[i].GetAttribute("href").Contains("keywords");
 
-                if (validation)
-                {
 
                     Perfil newPerfil = new Perfil();
                     newPerfil.Name = newNames[i];
                     newPerfil.Url = newLinks[i];
                     perfis.Add(newPerfil);
-                }
 
             }
 
